@@ -1,0 +1,35 @@
+# 忽略 VS Code 配置文件夹
+**/.vscode/
+
+# 忽略 CMake 构建目录
+**/out/
+**/build/
+**/cmake-build-*/
+**/CMakeFiles/
+**/*.cmake
+**/Makefile
+
+# 忽略可执行文件和编译产物
+**/*.exe
+**/*.out
+**/*.a
+**/*.lib
+**/*.dll
+**/*.so
+**/*.obj
+**/*.o
+**/*.ilk
+**/*.pdb
+
+# 忽略 IDE 临时文件
+*.user
+*.suo
+*.sln
+*.vcxproj*
+*.filters
+
+# 忽略其他生成文件
+Debug/
+Release/
+x64/
+x86/

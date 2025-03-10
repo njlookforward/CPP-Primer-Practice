@@ -1,3 +1,0 @@
-"C:\Program Files\CMake\bin\cmake.exe" -E rm -f CMakeFiles\ChapterTwoProject.dir/objects.a
-C:\msys64\ucrt64\bin\ar.exe qc CMakeFiles\ChapterTwoProject.dir/objects.a @CMakeFiles\ChapterTwoProject.dir\objects1.rsp
-C:\msys64\ucrt64\bin\g++.exe -g -Wl,--whole-archive CMakeFiles\ChapterTwoProject.dir/objects.a -Wl,--no-whole-archive -o ChapterTwoProject.exe -Wl,--out-implib,libChapterTwoProject.dll.a -Wl,--major-image-version,0,--minor-image-version,0 @CMakeFiles\ChapterTwoProject.dir\linkLibs.rsp
