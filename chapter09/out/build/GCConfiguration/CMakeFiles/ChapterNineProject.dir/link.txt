@@ -1,0 +1,3 @@
+"C:\Program Files\CMake\bin\cmake.exe" -E rm -f CMakeFiles\ChapterNineProject.dir/objects.a
+C:\msys64\ucrt64\bin\ar.exe qc CMakeFiles\ChapterNineProject.dir/objects.a @CMakeFiles\ChapterNineProject.dir\objects1.rsp
+C:\msys64\ucrt64\bin\g++.exe -g -Wl,--whole-archive CMakeFiles\ChapterNineProject.dir/objects.a -Wl,--no-whole-archive -o ChapterNineProject.exe -Wl,--out-implib,libChapterNineProject.dll.a -Wl,--major-image-version,0,--minor-image-version,0 @CMakeFiles\ChapterNineProject.dir\linkLibs.rsp
