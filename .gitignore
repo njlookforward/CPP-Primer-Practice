@@ -20,6 +20,8 @@
 **/*.o
 **/*.ilk
 **/*.pdb
+**/CMakeLists.txt
+**/CMakePresets.json
 
 # 忽略 IDE 临时文件
 *.user
