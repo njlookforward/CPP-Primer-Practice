@@ -3,6 +3,7 @@
 #include <utility>
 #include <vector>
 #include <memory>
+#include <bitset>
 #include "exercise.hpp"
 #include "TextQuery_tuple.hpp"
 
@@ -52,10 +53,79 @@ void exercise_17_3(int argc, char **argv)
 // exercise_17_8
 // 如果将Sales_data()作为accumulate的第三个参数的话，也会进行正常的累加，但是在输出时，是没有isbn的书号的
 
+void exercise_17_9()
+{
+    bitset<64> bitvec(32);  // 000000000000000100000
+    bitset<32> bv(1010101); // 000000000011110110100110110101
+    // string bstr;
+    cout << "Please input a 8 bits number with 0 and 1: ";
+    // cin >> bstr;
+    // bitset<8> bv2(bstr);
+    bitset<8> bv2;
+    cin >> bv2;
+    cout << bitvec.to_string() << endl
+         << bv.to_string() << endl
+         << bv2 << endl;
+}
+
+// exercise_17_10 说实话，我没理解是什么意思
+void exercise_17_10()
+{
+    // 一定要分清十进制表示的具体的数和二进制表示的位运算，都是一个数，只是进制的表示方式不同
+    bitset<22> bv = (1UL << 1) | (1UL << 2) | (1UL << 3) |
+                    (1UL << 5) | (1UL << 8) | (1UL << 13) | (1UL << 21);
+    cout << bv << endl;
+    bitset<22> bv2;
+    bv2.set(13);
+    bv2[19] = 1;
+    cout << bv2 << endl;
+}
+
+void exercise_17_11_12_13_ten()
+{
+    bitset<11> bv("10111001011");
+    int answer = bv.to_ulong();
+    cout << "answer is " << answer << " with" << endl
+         << bv << endl;
+    
+    TenBitsAnswer answerSet(answer);
+    int index;
+    while (true)
+    {
+        cout << "Please input which question's answer you want to know or 0 to quit: ";
+        cin >> index;
+        if(!cin || index == 0) break;
+        cout << "No." << index << "\'s answer is " << boolalpha 
+             << answerSet.getAnswer(index) << noboolalpha << endl; 
+    }
+}
+
+void exercise_17_11_12_13_hundred()
+{
+    unsigned long long ullnum = 47183724891345892;
+    bitset<101> answer(ullnum);
+    cout << ullnum << " with" << endl
+         << answer << endl;
+    HundredBitsAnswer answerSet(ullnum);
+    int index;
+    while (true)
+    {
+        cout << "Please input which question's answer you want to know or 0 to quit: ";
+        cin >> index;
+        if(!cin || index == 0) break;
+        cout << "No." << index << "\'s answer is " << boolalpha 
+             << answerSet.getAnswer(index) << noboolalpha << endl; 
+    } 
+}
+
 int main(int argc, char **argv)
 {
     // exercise_17_1();
-    exercise_17_3(argc, argv);
+    // exercise_17_3(argc, argv);
+    // exercise_17_9();
+    // exercise_17_10();
+    // exercise_17_11_12_13_ten();
+    exercise_17_11_12_13_hundred();
 
     return 0;
 }

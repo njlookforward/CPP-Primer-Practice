@@ -5,3 +5,4 @@
        顺序使用一个<运算符同时实现</>/==的算法
 * Bug: accumulate()是定义在<numeric>头文件中的
 * 由于有sort等标准库容器的存在，使用iterator还是比const_iterator方便太多
+* 当使用位运算时，尽量使用unsigned long数据类型，1UL这样

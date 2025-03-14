@@ -67,5 +67,49 @@ struct matchStore {
 typedef std::shared_ptr<std::vector<matchStore>> pmatchset;
 pmatchset findBook_v3(std::vector<std::vector<Sales_data>> &bookstores, const std::string &book);
 
+// exercise_17_11_12
+// 包含10个真假问题的答案
+struct TenBitsAnswer {
+    TenBitsAnswer() = default;
+    TenBitsAnswer(int a): _answer(a) {}
+    bool getAnswer(int index) const;
+    void setAnswer(int index, bool status);
+
+    int _answer = 0;
+};
+
+inline bool TenBitsAnswer::getAnswer(int index) const
+{
+    return _answer & (1UL << index);
+}
+
+inline void TenBitsAnswer::setAnswer(int index, bool status)
+{
+        if(status)
+            _answer |= (1UL << index);  // 不要傻了，还得改变状态呢
+    else
+        _answer &= ~(1UL << index);
+}
+
+struct HundredBitsAnswer
+{
+    HundredBitsAnswer() = default;
+    HundredBitsAnswer(unsigned long long answer): _answer(answer) {}
+    bool getAnswer(int index) const;
+    void setAnswer(int index, bool status);
+    
+    std::bitset<101> _answer;
+};
+
+inline bool HundredBitsAnswer::getAnswer(int index) const
+{
+    return _answer[index];
+}
+
+inline void HundredBitsAnswer::setAnswer(int index, bool status)
+{
+    status ? (_answer[index] = 1) : (_answer[index] = 0);
+}
+
 
 #endif
