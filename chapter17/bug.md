@@ -6,3 +6,6 @@
 * Bug: accumulate()是定义在<numeric>头文件中的
 * 由于有sort等标准库容器的存在，使用iterator还是比const_iterator方便太多
 * 当使用位运算时，尽量使用unsigned long数据类型，1UL这样
+
+* 对于从同一个文件进行读写，如果要使用regex_replace进行部分文本替换时，尽量不要使用getline
+* 而是使用read读取一次性读取所有的文本，这样可以省去很多麻烦

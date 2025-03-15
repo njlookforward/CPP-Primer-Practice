@@ -95,3 +95,62 @@ pmatchset findBook_v3(std::vector<std::vector<Sales_data>> &bookstores, const st
 
     return matchset;
 }
+
+bool phoneValid(const std::smatch &phone)
+{
+    // 如果有左括号，那么必须有右括号，中间直接接数字或者空格
+    if(phone[1].matched)
+        return phone[3].matched &&
+               (phone[4].matched == 0 || phone[4].str() == " ");
+    
+    // 如果没有左括号，那么也必须没有右括号，剩余两个连接符是一样的
+    else
+        return !phone[3].matched &&
+               (phone[4].str() == phone[6].str());
+}
+
+void AddressBook(std::vector<peopleinfo> &phones, std::ifstream &infile)
+{
+    string format("(\\()?(\\d{3})(\\))?([-. ])?(\\d{3})([-. ])?(\\d{4})");
+    regex re(format);
+
+    string line;
+    // Bug: 这么简单的逻辑我都会弄错，实在是不应该啊
+    while (getline(infile, line))
+    {
+        istringstream iss(line);
+        peopleinfo person;
+        iss >> person._name;
+        for(sregex_iterator bgit(line.begin(), line.end(), re), edit;
+            bgit != edit; ++bgit)
+        {
+            person._phones.push_back(bgit->str());
+        }
+        phones.push_back(person);
+    }
+}
+
+void printPhones(std::ostream &os, const std::vector<peopleinfo> &phones)
+{
+    string format("(\\()?(\\d{3})(\\))?([-. ])?(\\d{3})([-. ])?(\\d{4})");
+    regex re(format);
+    smatch result;
+
+    for (const auto &entry : phones)
+    {
+        ostringstream formatted, badnums;
+        for (const auto &phone : entry._phones)
+        {
+            if(regex_match(phone, result, re) && phoneValid(result))
+            {
+                formatted << " " << phone;
+            } else
+                badnums << " " << phone;
+        }
+        if(!formatted.str().empty())
+            os << entry._name << formatted.str() << endl;
+        if(!badnums.str().empty())
+            os << "input error: " << entry._name 
+               << " invalid number(s) " << badnums.str() << endl;
+    }
+}

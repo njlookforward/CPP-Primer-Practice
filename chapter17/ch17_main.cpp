@@ -6,6 +6,7 @@
 #include <iostream>
 #include <fstream>
 #include <bitset>
+#include <regex>
 #include "exercise.hpp"
 
 using namespace std;
@@ -83,9 +84,9 @@ void prog3_bitset()
 void prog4_bitset_operation()
 {
     bitset<16> bitvec(1U);
-    bool is_set = bitvec.any();         // true
-    bool is_not_set = bitvec.none();    // false
-    bool is_all_set = bitvec.all();     // false
+    // bool is_set = bitvec.any();         // true
+    // bool is_not_set = bitvec.none();    // false
+    // bool is_all_set = bitvec.all();     // false
     auto set_sz = bitvec.count();       // 1
     auto bitsz = bitvec.size();         // 16
     cout << set_sz << " " << bitsz << endl;
@@ -142,7 +143,171 @@ void prog5_bitset_quiz()
 
 void prog6_regex()
 {
+    // 查找不在c之后的非法"ei"子串
+    string pattern("[^c]ei");
+    // regular expression include integral word including substr
+    pattern = "[[:alpha:]]*" + pattern + "[[:alpha:]]*";    // *表示0个或多个
+    regex r(pattern, regex::icase);
+    string test_string("receipt freind theif receive");
+    smatch results;
+    if(regex_search(test_string, results, r))
+        cout << results.str() << endl;
+    for(sregex_iterator bgit(test_string.cbegin(), test_string.cend(), r), edit;
+        bgit != edit; ++bgit)
+        cout << bgit->str() << endl;
+}
+
+void prog7_regex_icase(int argc, char **argv)
+{
+    checkArgs(argc, 2);
+    ifstream infile;
+    openInputFile(infile, argv[1]);
+    shared_ptr<ifstream> pfile(&infile, [](ifstream *pf) { pf->close(); });
     
+    try{
+        // 注意输入序列是输入序列，不要与正则表达式的字符串表达弄混
+        regex re("([[:alnum:]]+)\\.(cpp|cxx|cc)$", regex::icase); // $是表示子表达式的意思吗
+        smatch results;
+        string filename;
+        while (infile >> filename)
+        {
+            if(regex_search(filename, results, re))
+                cout << results.str(0) << " " << results.str(1) << endl;
+        }
+
+        cmatch cres;
+        if(regex_search("myfile.cc", cres, re))
+            cout << cres.str() << endl;
+    } catch(regex_error e)
+    {   cerr << e.what() << "\ncode: " << e.code() << endl; }
+}
+
+void prog8_regex_ssubmatch(int argc, char **argv)
+{
+    checkArgs(argc, 2);
+    ifstream infile;
+    openInputFile(infile, argv[1]);
+    shared_ptr<ifstream> pfile(&infile, [](ifstream *pf) { pf->close(); });
+
+    string file;
+    char ch;
+    while (infile.get(ch))
+    {
+        file.push_back(ch);
+    }
+    
+    string pattern("[^c]ei");
+    pattern = "[[:alpha:]]*" + pattern + "[[:alpha:]]*";
+    regex re(pattern, regex::icase);
+    for(sregex_iterator bgit(file.begin(), file.end(), re), edit;
+        bgit != edit; ++bgit)
+    {
+        if(bgit->str() == "albeit" || bgit->str() == "neighbor")
+            continue;
+
+        auto pos = bgit->prefix().length();
+        pos = pos > 40 ? (pos - 40) : 0;
+        cout << bgit->prefix().str().substr(pos)
+             << "\n\t\t>>> " << bgit->str() << " <<<\n"
+             << bgit->suffix().str().substr(0, 40)
+             << endl;
+    }
+}
+
+void prog9_regex_submatch(int argc, char **argv)
+{
+    checkArgs(argc, 2);
+    ifstream infile;
+    openInputFile(infile, argv[1]);
+    shared_ptr<ifstream> pfile(&infile, [](ifstream *pf) { pf->close(); });
+
+    string phone("(\\()?(\\d{3})(\\))?([-. ])?(\\d{3})([-. ])?(\\d{4})");
+    regex re(phone);
+    smatch results;
+    string phoneMsgSet;
+    char ch;
+    while (infile.get(ch))
+    {
+        phoneMsgSet.push_back(ch);
+    }
+    for(sregex_iterator bgit(phoneMsgSet.begin(), phoneMsgSet.end(), re), edit;
+        bgit != edit; ++bgit)
+    {
+        if(phoneValid(*bgit))
+        {
+            cout << bgit->str() << endl;
+        } else {
+            cout << "this is an invalid phone number: "
+                 << bgit->str() << endl;
+        }
+    }
+}
+
+void prog10_regex_replace()
+{
+    string phone("(\\()?(\\d{3})(\\))?([-. ])?(\\d{3})([-. ])?(\\d{4})");
+    regex re(phone);
+
+    string fmt("$2.$5.$7");
+    string number("(908) 555-1800");
+    cout << regex_replace(number, re, fmt) << endl;
+}
+
+void prog11_regex_replace(int argc, char **argv)
+{
+    checkArgs(argc, 2);
+    // fstream file("..\\..\\..\\data\\phones", ios::ate | ios::in | ios::out);
+    fstream file(argv[1], ios::in | ios::out | ios::ate);
+    if(!file)
+    {
+        cerr << "Sorry, cannot open " << argv[1] << endl;
+        exit(-1);
+    }
+    shared_ptr<fstream> pfile(&file, [](fstream *pf) { pf->close(); });
+
+    string phone("(\\()?(\\d{3})(\\))?([-. ])?(\\d{3})([-. ])?(\\d{4})");
+    regex re(phone);
+
+    string fmt("$2.$5.$7");
+    string fmt2("$2.$5.$7 ");
+    string line;
+    file.seekg(0, ios::beg);
+    while (getline(file, line))
+    {
+        cout << regex_replace(line, re, fmt2, regex_constants::format_no_copy) << endl;
+    }
+    
+    // 我一次性读取所有的内容，然后再追加到文件的末尾不就得了
+    // Bug: 的确应该一次性读取整个文件的内容，然后进行处理，处理结束后再追加到文件末尾
+    // 如果是一行一行的处理，刚开始时origin_end = 97,不断追加之后读取完第三行, curpos = 99，永远会陷入死循环
+    // iostream的底层操作的确是很容易发生错误，尽量一次性进行处理，一次性处理是最优选择，可以保留文本中的所有换行符
+    // string contents;
+    // contents.resize(file.tellg());
+    // file.seekg(0, fstream::beg);
+    // file.read(&contents[0], contents.size());
+
+    // file.seekp(0, fstream::end);
+    // file << regex_replace(contents, re, fmt);
+
+    // 我再次尝试一下，是不是跟我每次使用endl有关系啊，不加endl会不会成功呢,只要加上换行就会进入死循环
+    // 因此不能使用getline，应该使用file.get()，读取文件本身自己的换行符
+    // Bug: line是空串，传入他的第一个元素的指针是错误的，因此必须先为line申请内存空间
+    // string line;
+    // auto origin_end = file.tellg();
+    // file.seekg(0, ios::beg);
+    // auto curpos = file.tellg();
+    // while (curpos != origin_end && getline(file, line))
+    // {
+    //     // 因为geiline会丢掉'\n'，因此不会换行的
+    //     // line.push_back('\n');
+    //     // 要是对流进行无格式操作，那么中间尽量不能有自己的格式操作，尤其是'\n'，我认为应该跟windowsOS有关系
+    //     // Bug: 最后的我放弃自己加'\n'的操作了，应该是除了'\n'字符以外，添加其他字符像空格是没有问题的
+    //     curpos = file.tellg();
+    //     file.seekp(0, ios::end);
+    //     // Bug: 只要加入换行，就会进入死循环
+    //     file << regex_replace(line, re, fmt);
+    //     file.seekg(curpos);
+    // }
 }
 
 int main(int argc, char **argv)
@@ -151,7 +316,13 @@ int main(int argc, char **argv)
     // prog2_tuple_bookstores(argc, argv);
     // prog3_bitset();
     // prog4_bitset_operation();
-    prog5_bitset_quiz();
+    // prog5_bitset_quiz();
+    // prog6_regex();
+    // prog7_regex_icase(argc, argv);
+    // prog8_regex_ssubmatch(argc, argv);
+    // prog9_regex_submatch(argc, argv);
+    // prog10_regex_replace();
+    prog11_regex_replace(argc, argv);
 
     return 0;
 }

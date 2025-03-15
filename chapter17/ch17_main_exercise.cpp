@@ -118,6 +118,100 @@ void exercise_17_11_12_13_hundred()
     } 
 }
 
+// exercise_17_14 in the prog7
+// exercise_17_15_16 in the prog6
+// exercise_17_17_18 in the prog8 我不知道怎么修改正则表达式，只能修改程序逻辑了
+
+// exercise_17_19
+// 因为如果m[4]没有匹配，则m[4].str()返回空串，仍然能够用于判断
+// exercise_17_20 in the prog9
+void exercise_17_21(int argc, char **argv)
+{
+    checkArgs(argc, 2);
+    ifstream infile;
+    openInputFile(infile, argv[1]);
+    shared_ptr<ifstream> pfile(&infile, [](ifstream *pf) { pf->close(); });
+
+    vector<peopleinfo> phones;
+    AddressBook(phones, infile);
+    printPhones(cout, phones);
+}
+
+// exercise_17_22
+// string phone("(\\()?(\\d{3})(\\))?([ ]*)(\\d{3})([ ]*)(\\d{4})");
+// 我认为就是修改正则表达式
+
+// exercise_17_23
+// (\\d{5})([-])?(\\d{4})?
+
+// exercise_17_24 is prog11
+
+void exercise_17_25(int argc, char **argv)
+{
+    checkArgs(argc, 2);
+    ifstream infile;
+    openInputFile(infile, argv[1]);
+    shared_ptr<ifstream> pfile(&infile, [](ifstream *pf) { pf->close(); });
+
+    string phone("(\\()?(\\d{3})(\\))?([-. ])?(\\d{3})([-. ])?(\\d{4})");
+    regex re(phone);
+
+    string fmt("$2.$5.$7");
+    smatch results;
+    string line;
+    while (getline(infile, line))
+    {
+        if(regex_search(line, results, re))
+        {
+            cout << results.prefix().str() << results.format(fmt) << endl;
+        }    
+    }
+}
+
+void exercise_17_26(int argc, char **argv)
+{
+    checkArgs(argc, 2);
+    ifstream infile;
+    openInputFile(infile, argv[1]);
+    shared_ptr<ifstream> pfile(&infile, [](ifstream *pf) { pf->close(); });
+
+    string phone("(\\()?(\\d{3})(\\))?([-. ])?(\\d{3})([-. ])?(\\d{4})");
+    regex re(phone);
+
+    string fmt("$2.$5.$7");
+    string line;
+    while (getline(infile, line))
+    {
+        sregex_iterator iter(line.begin(), line.end(), re), edit;
+        string name;
+        if (iter != edit)
+        {
+            name.assign(iter->prefix().str());
+        }
+        if(++iter != edit) {
+            cout << name;
+        }
+        for(; iter != edit; ++iter)
+        {
+            cout << iter->format(fmt) << " ";
+        }
+        cout << endl;
+    }
+}
+
+void exercise_17_27()
+{
+    string post("(\\d{5})([-])?(\\d{4})");
+    regex re(post);
+
+    string fmt("$1-$3");
+    string stampnum;
+    while (cin >> stampnum && stampnum != "q")
+    {
+        cout << regex_replace(stampnum, re, fmt) << endl;
+    }
+}
+
 int main(int argc, char **argv)
 {
     // exercise_17_1();
@@ -125,7 +219,11 @@ int main(int argc, char **argv)
     // exercise_17_9();
     // exercise_17_10();
     // exercise_17_11_12_13_ten();
-    exercise_17_11_12_13_hundred();
+    // exercise_17_11_12_13_hundred();
+    // exercise_17_21(argc, argv);
+    // exercise_17_25(argc, argv);
+    // exercise_17_26(argc, argv);
+    exercise_17_27();
 
     return 0;
 }

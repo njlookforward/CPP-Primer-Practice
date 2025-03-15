@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include <fstream>
+#include <sstream>
 #include <cstdlib>
 #include <stdexcept>
 #include <string>
@@ -11,6 +12,8 @@
 #include <memory>
 #include <algorithm>
 #include <numeric>
+#include <bitset>
+#include <regex>
 #include "Sales_data.hpp"
 
 inline void checkArgs(int argc, int req)
@@ -111,5 +114,15 @@ inline void HundredBitsAnswer::setAnswer(int index, bool status)
     status ? (_answer[index] = 1) : (_answer[index] = 0);
 }
 
+bool phoneValid(const std::smatch &phone);
+
+// exercise_17_21
+struct peopleinfo {
+    std::string _name;
+    std::vector<std::string> _phones;
+};
+
+void AddressBook(std::vector<peopleinfo> &phones, std::ifstream &infile);
+void printPhones(std::ostream &os, const std::vector<peopleinfo> &phones);
 
 #endif
