@@ -7,6 +7,8 @@
 #include <fstream>
 #include <bitset>
 #include <regex>
+#include <random>
+#include <ctime>
 #include "exercise.hpp"
 
 using namespace std;
@@ -250,7 +252,7 @@ void prog10_regex_replace()
 
     string fmt("$2.$5.$7");
     string number("(908) 555-1800");
-    cout << regex_replace(number, re, fmt) << endl;
+    // cout << regex_replace(number, re, fmt) << endl;
 }
 
 void prog11_regex_replace(int argc, char **argv)
@@ -265,17 +267,17 @@ void prog11_regex_replace(int argc, char **argv)
     }
     shared_ptr<fstream> pfile(&file, [](fstream *pf) { pf->close(); });
 
-    string phone("(\\()?(\\d{3})(\\))?([-. ])?(\\d{3})([-. ])?(\\d{4})");
-    regex re(phone);
+    // string phone("(\\()?(\\d{3})(\\))?([-. ])?(\\d{3})([-. ])?(\\d{4})");
+    // regex re(phone);
 
-    string fmt("$2.$5.$7");
-    string fmt2("$2.$5.$7 ");
-    string line;
-    file.seekg(0, ios::beg);
-    while (getline(file, line))
-    {
-        cout << regex_replace(line, re, fmt2, regex_constants::format_no_copy) << endl;
-    }
+    // string fmt("$2.$5.$7");
+    // string fmt2("$2.$5.$7 ");
+    // string line;
+    // file.seekg(0, ios::beg);
+    // while (getline(file, line))
+    // {
+    //     cout << regex_replace(line, re, fmt2, regex_constants::format_no_copy) << endl;
+    // }
     
     // 我一次性读取所有的内容，然后再追加到文件的末尾不就得了
     // Bug: 的确应该一次性读取整个文件的内容，然后进行处理，处理结束后再追加到文件末尾
@@ -310,6 +312,58 @@ void prog11_regex_replace(int argc, char **argv)
     // }
 }
 
+void prog12_random()
+{
+    default_random_engine e;
+    for (size_t i = 0; i < 10; i++)
+    {
+        cout << e() << " ";
+    }
+    cout << endl;
+
+    uniform_int_distribution<unsigned> u(0, 9);
+    for (size_t i = 0; i < 10; i++)
+    {
+        cout << u(e) << " ";
+    }
+    cout << endl;
+    cout << "min: " << e.min() << " max: " << e.max() << endl;
+
+    vector<unsigned> v1(good_randVec());
+    for (auto &&i : v1)
+    {
+        cout << i << " ";
+    }
+    cout << endl;
+
+    vector<unsigned> v2(good_randVec());
+    for (auto &&i : v2)
+    {
+        cout << i << " ";
+    }
+    cout << endl;
+}
+
+void prog13_random_seed()
+{
+    default_random_engine e1, e2(2147483646),
+                          e3, e4(32767);
+    e3.seed(32767);
+    for (size_t i = 0; i < 100; i++)
+    {
+        if(e1() == e2())
+            cout << "unseeded match at iteration: " << i << endl;
+        if(e3() != e4())
+            cout << "seeded differs at iteration: " << i << endl;
+    }
+    default_random_engine e5(static_cast<unsigned long>(time(NULL)));
+    for (size_t i = 0; i < 10; i++)
+    {
+        cout << e5() << " ";
+    }
+    cout << endl;
+}
+
 int main(int argc, char **argv)
 {
     // prog1_tuple();
@@ -322,7 +376,9 @@ int main(int argc, char **argv)
     // prog8_regex_ssubmatch(argc, argv);
     // prog9_regex_submatch(argc, argv);
     // prog10_regex_replace();
-    prog11_regex_replace(argc, argv);
+    // prog11_regex_replace(argc, argv);
+    // prog12_random();
+    prog13_random_seed();
 
     return 0;
 }

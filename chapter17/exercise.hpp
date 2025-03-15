@@ -14,6 +14,7 @@
 #include <numeric>
 #include <bitset>
 #include <regex>
+#include <random>
 #include "Sales_data.hpp"
 
 inline void checkArgs(int argc, int req)
@@ -124,5 +125,13 @@ struct peopleinfo {
 
 void AddressBook(std::vector<peopleinfo> &phones, std::ifstream &infile);
 void printPhones(std::ostream &os, const std::vector<peopleinfo> &phones);
+
+/********random engine and distribution*******/
+std::vector<unsigned> good_randVec();
+
+// exercise_17_28_29_30
+unsigned int randomNum_v1();
+unsigned int randomNum_v2(long _seed = -1);
+unsigned int randomNum_v3(long _seed = -1, unsigned _min = 0, unsigned _max = 9999);
 
 #endif

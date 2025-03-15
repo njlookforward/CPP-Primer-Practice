@@ -154,3 +154,46 @@ void printPhones(std::ostream &os, const std::vector<peopleinfo> &phones)
                << " invalid number(s) " << badnums.str() << endl;
     }
 }
+
+std::vector<unsigned> good_randVec()
+{
+    // 必须保留状态，这样每次调用的时候是不一样的
+    static default_random_engine e;
+    static uniform_int_distribution<int> u(0, 9);
+    vector<unsigned> ret;
+    for (size_t i = 0; i < 20; i++)
+    {
+        ret.push_back(u(e));
+    }
+    return ret;
+}
+
+unsigned int randomNum_v1()
+{
+    static default_random_engine e;
+    static uniform_int_distribution<unsigned int> u(0, 9999);
+    return u(e);
+}
+
+unsigned int randomNum_v2(long _seed)
+{
+    static default_random_engine e;
+    static uniform_int_distribution<unsigned int> u(0, 9999);
+
+    if(_seed >= 0)
+        e.seed(_seed);
+    return u(e);
+}
+
+unsigned int randomNum_v3(long _seed, unsigned _min, unsigned _max)
+{
+    static default_random_engine e;
+    static uniform_int_distribution<unsigned int> u(0, 9999);
+
+    if(_seed >= 0)
+        e.seed(_seed);
+    // 对于分布类型如果要指定范围的话，就不能使用static了
+    // 我的想法是错的，尽管不能重新定义static对象，但是可以通过赋值的形式进行改变
+    u = uniform_int_distribution<unsigned int>(_min, _max);
+    return u(e);
+}

@@ -4,6 +4,7 @@
 #include <vector>
 #include <memory>
 #include <bitset>
+#include <random>
 #include "exercise.hpp"
 #include "TextQuery_tuple.hpp"
 
@@ -212,6 +213,19 @@ void exercise_17_27()
     }
 }
 
+void exercise_17_28_29_30()
+{
+    // BUG
+    // 总是出现问题，是我的测试方法有问题，必须修改一次然后继续才行，否则一直都是0000000000
+    for (size_t i = 0; i < 10; i++)
+    {
+        // cout << randomNum_v1() << " ";
+        // cout << randomNum_v2(i * 2) << " ";
+        cout << randomNum_v3(i * 100, 0, 2 * i) << " ";
+    }
+    cout << endl;
+}
+
 int main(int argc, char **argv)
 {
     // exercise_17_1();
@@ -223,7 +237,8 @@ int main(int argc, char **argv)
     // exercise_17_21(argc, argv);
     // exercise_17_25(argc, argv);
     // exercise_17_26(argc, argv);
-    exercise_17_27();
+    // exercise_17_27();
+    exercise_17_28_29_30();
 
     return 0;
 }
