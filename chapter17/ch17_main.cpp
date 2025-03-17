@@ -9,6 +9,7 @@
 #include <regex>
 #include <random>
 #include <ctime>
+#include <cmath>
 #include "exercise.hpp"
 
 using namespace std;
@@ -143,117 +144,117 @@ void prog5_bitset_quiz()
         cout << "No.29 student fail" << endl; 
 }
 
-void prog6_regex()
-{
-    // 查找不在c之后的非法"ei"子串
-    string pattern("[^c]ei");
-    // regular expression include integral word including substr
-    pattern = "[[:alpha:]]*" + pattern + "[[:alpha:]]*";    // *表示0个或多个
-    regex r(pattern, regex::icase);
-    string test_string("receipt freind theif receive");
-    smatch results;
-    if(regex_search(test_string, results, r))
-        cout << results.str() << endl;
-    for(sregex_iterator bgit(test_string.cbegin(), test_string.cend(), r), edit;
-        bgit != edit; ++bgit)
-        cout << bgit->str() << endl;
-}
+// void prog6_regex()
+// {
+//     // 查找不在c之后的非法"ei"子串
+//     string pattern("[^c]ei");
+//     // regular expression include integral word including substr
+//     pattern = "[[:alpha:]]*" + pattern + "[[:alpha:]]*";    // *表示0个或多个
+//     regex r(pattern, regex::icase);
+//     string test_string("receipt freind theif receive");
+//     smatch results;
+//     if(regex_search(test_string, results, r))
+//         cout << results.str() << endl;
+//     for(sregex_iterator bgit(test_string.cbegin(), test_string.cend(), r), edit;
+//         bgit != edit; ++bgit)
+//         cout << bgit->str() << endl;
+// }
 
-void prog7_regex_icase(int argc, char **argv)
-{
-    checkArgs(argc, 2);
-    ifstream infile;
-    openInputFile(infile, argv[1]);
-    shared_ptr<ifstream> pfile(&infile, [](ifstream *pf) { pf->close(); });
+// void prog7_regex_icase(int argc, char **argv)
+// {
+//     checkArgs(argc, 2);
+//     ifstream infile;
+//     openInputFile(infile, argv[1]);
+//     shared_ptr<ifstream> pfile(&infile, [](ifstream *pf) { pf->close(); });
     
-    try{
-        // 注意输入序列是输入序列，不要与正则表达式的字符串表达弄混
-        regex re("([[:alnum:]]+)\\.(cpp|cxx|cc)$", regex::icase); // $是表示子表达式的意思吗
-        smatch results;
-        string filename;
-        while (infile >> filename)
-        {
-            if(regex_search(filename, results, re))
-                cout << results.str(0) << " " << results.str(1) << endl;
-        }
+//     try{
+//         // 注意输入序列是输入序列，不要与正则表达式的字符串表达弄混
+//         regex re("([[:alnum:]]+)\\.(cpp|cxx|cc)$", regex::icase); // $是表示子表达式的意思吗
+//         smatch results;
+//         string filename;
+//         while (infile >> filename)
+//         {
+//             if(regex_search(filename, results, re))
+//                 cout << results.str(0) << " " << results.str(1) << endl;
+//         }
 
-        cmatch cres;
-        if(regex_search("myfile.cc", cres, re))
-            cout << cres.str() << endl;
-    } catch(regex_error e)
-    {   cerr << e.what() << "\ncode: " << e.code() << endl; }
-}
+//         cmatch cres;
+//         if(regex_search("myfile.cc", cres, re))
+//             cout << cres.str() << endl;
+//     } catch(regex_error e)
+//     {   cerr << e.what() << "\ncode: " << e.code() << endl; }
+// }
 
-void prog8_regex_ssubmatch(int argc, char **argv)
-{
-    checkArgs(argc, 2);
-    ifstream infile;
-    openInputFile(infile, argv[1]);
-    shared_ptr<ifstream> pfile(&infile, [](ifstream *pf) { pf->close(); });
+// void prog8_regex_ssubmatch(int argc, char **argv)
+// {
+//     checkArgs(argc, 2);
+//     ifstream infile;
+//     openInputFile(infile, argv[1]);
+//     shared_ptr<ifstream> pfile(&infile, [](ifstream *pf) { pf->close(); });
 
-    string file;
-    char ch;
-    while (infile.get(ch))
-    {
-        file.push_back(ch);
-    }
+//     string file;
+//     char ch;
+//     while (infile.get(ch))
+//     {
+//         file.push_back(ch);
+//     }
     
-    string pattern("[^c]ei");
-    pattern = "[[:alpha:]]*" + pattern + "[[:alpha:]]*";
-    regex re(pattern, regex::icase);
-    for(sregex_iterator bgit(file.begin(), file.end(), re), edit;
-        bgit != edit; ++bgit)
-    {
-        if(bgit->str() == "albeit" || bgit->str() == "neighbor")
-            continue;
+//     string pattern("[^c]ei");
+//     pattern = "[[:alpha:]]*" + pattern + "[[:alpha:]]*";
+//     regex re(pattern, regex::icase);
+//     for(sregex_iterator bgit(file.begin(), file.end(), re), edit;
+//         bgit != edit; ++bgit)
+//     {
+//         if(bgit->str() == "albeit" || bgit->str() == "neighbor")
+//             continue;
 
-        auto pos = bgit->prefix().length();
-        pos = pos > 40 ? (pos - 40) : 0;
-        cout << bgit->prefix().str().substr(pos)
-             << "\n\t\t>>> " << bgit->str() << " <<<\n"
-             << bgit->suffix().str().substr(0, 40)
-             << endl;
-    }
-}
+//         auto pos = bgit->prefix().length();
+//         pos = pos > 40 ? (pos - 40) : 0;
+//         cout << bgit->prefix().str().substr(pos)
+//              << "\n\t\t>>> " << bgit->str() << " <<<\n"
+//              << bgit->suffix().str().substr(0, 40)
+//              << endl;
+//     }
+// }
 
-void prog9_regex_submatch(int argc, char **argv)
-{
-    checkArgs(argc, 2);
-    ifstream infile;
-    openInputFile(infile, argv[1]);
-    shared_ptr<ifstream> pfile(&infile, [](ifstream *pf) { pf->close(); });
+// void prog9_regex_submatch(int argc, char **argv)
+// {
+//     checkArgs(argc, 2);
+//     ifstream infile;
+//     openInputFile(infile, argv[1]);
+//     shared_ptr<ifstream> pfile(&infile, [](ifstream *pf) { pf->close(); });
 
-    string phone("(\\()?(\\d{3})(\\))?([-. ])?(\\d{3})([-. ])?(\\d{4})");
-    regex re(phone);
-    smatch results;
-    string phoneMsgSet;
-    char ch;
-    while (infile.get(ch))
-    {
-        phoneMsgSet.push_back(ch);
-    }
-    for(sregex_iterator bgit(phoneMsgSet.begin(), phoneMsgSet.end(), re), edit;
-        bgit != edit; ++bgit)
-    {
-        if(phoneValid(*bgit))
-        {
-            cout << bgit->str() << endl;
-        } else {
-            cout << "this is an invalid phone number: "
-                 << bgit->str() << endl;
-        }
-    }
-}
+//     string phone("(\\()?(\\d{3})(\\))?([-. ])?(\\d{3})([-. ])?(\\d{4})");
+//     regex re(phone);
+//     smatch results;
+//     string phoneMsgSet;
+//     char ch;
+//     while (infile.get(ch))
+//     {
+//         phoneMsgSet.push_back(ch);
+//     }
+//     for(sregex_iterator bgit(phoneMsgSet.begin(), phoneMsgSet.end(), re), edit;
+//         bgit != edit; ++bgit)
+//     {
+//         if(phoneValid(*bgit))
+//         {
+//             cout << bgit->str() << endl;
+//         } else {
+//             cout << "this is an invalid phone number: "
+//                  << bgit->str() << endl;
+//         }
+//     }
+// }
 
-void prog10_regex_replace()
-{
-    string phone("(\\()?(\\d{3})(\\))?([-. ])?(\\d{3})([-. ])?(\\d{4})");
-    regex re(phone);
+// void prog10_regex_replace()
+// {
+//     string phone("(\\()?(\\d{3})(\\))?([-. ])?(\\d{3})([-. ])?(\\d{4})");
+//     regex re(phone);
 
-    string fmt("$2.$5.$7");
-    string number("(908) 555-1800");
-    // cout << regex_replace(number, re, fmt) << endl;
-}
+//     string fmt("$2.$5.$7");
+//     string number("(908) 555-1800");
+//     // cout << regex_replace(number, re, fmt) << endl;
+// }
 
 void prog11_regex_replace(int argc, char **argv)
 {
@@ -364,6 +365,53 @@ void prog13_random_seed()
     cout << endl;
 }
 
+void prog14_random_real()
+{
+    // 这是生成随机浮点数的正确方法
+    default_random_engine e;
+    uniform_real_distribution<double> u(0, 1);
+    for (size_t i = 0; i < 10; i++)
+    {
+        cout << u(e) << " ";
+    }
+    cout << endl;
+    cout << u.min() << " " << u.max() << endl;
+}
+
+void prog15_normal_random()
+{
+    default_random_engine e;
+    normal_distribution<> n(4, 1.5);    // 默认随机数类型是double
+    vector<unsigned> vals(9);   // 值初始化
+
+    for (size_t i = 0; i < 200; ++i)
+    {
+        unsigned val = lround(n(e));    // 四舍五入到最近的整数
+        if(val < vals.size())
+            ++vals[val];
+    }
+    for (size_t i = 0; i < vals.size(); ++i)
+    {
+        cout << i << ": " << string(vals[i], '*') << endl;
+    }
+}
+
+void prog16_play()
+{
+    static default_random_engine e;
+    static bernoulli_distribution b(.55);
+    
+    string resp;
+    do {
+        bool first = b(e);
+        cout << (first ? "We go first."
+                       : "You get to go first.") << endl;
+        cout << (play(first) ? "sorry, you lost."
+                             : "congratulations, you win.") << endl;
+        cout << "Would you want to play again? yes or no: ";
+    } while(cin >> resp && resp[0] == 'y');
+}
+
 int main(int argc, char **argv)
 {
     // prog1_tuple();
@@ -378,7 +426,10 @@ int main(int argc, char **argv)
     // prog10_regex_replace();
     // prog11_regex_replace(argc, argv);
     // prog12_random();
-    prog13_random_seed();
+    // prog13_random_seed();
+    // prog14_random_real();
+    // prog15_normal_random();
+    prog16_play();
 
     return 0;
 }

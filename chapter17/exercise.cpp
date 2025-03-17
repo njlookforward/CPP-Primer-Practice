@@ -185,8 +185,9 @@ unsigned int randomNum_v2(long _seed)
     return u(e);
 }
 
-unsigned int randomNum_v3(long _seed, unsigned _min, unsigned _max)
+unsigned int randomNum_v3(long _seed, long _min, long _max)
 {
+    // 必须是static的。可以记录状态
     static default_random_engine e;
     static uniform_int_distribution<unsigned int> u(0, 9999);
 
@@ -194,6 +195,88 @@ unsigned int randomNum_v3(long _seed, unsigned _min, unsigned _max)
         e.seed(_seed);
     // 对于分布类型如果要指定范围的话，就不能使用static了
     // 我的想法是错的，尽管不能重新定义static对象，但是可以通过赋值的形式进行改变
-    u = uniform_int_distribution<unsigned int>(_min, _max);
+    if(_max > _min)
+        u = uniform_int_distribution<unsigned int>(_min, _max);
+
     return u(e);
+}
+
+bool play(bool first)
+{
+    static default_random_engine e;
+    static bernoulli_distribution b;
+
+    // 谁先置为1，谁就赢。
+    bool mac, human;
+    while(first)
+    {
+        mac = b(e);
+        human = b(e);
+        if(mac)
+            return true;
+        else if(human)
+            return false;
+        else
+            continue;
+    }
+    while (!first)
+    {
+        mac = b(e);
+        human = b(e);
+        if(human)
+            return false;
+        else if(mac)
+            return true;
+        else
+            continue;
+    }
+}
+
+void word_tansform(std::ifstream &map_file, std::ifstream &text, std::ostream &os)
+{
+    auto transMap = buildMap(map_file);
+    string line;
+    while (getline(text, line))
+    {
+        istringstream iss(line);
+        bool firstword = true;
+        string word;
+        while (iss >> word)
+        {
+            if(firstword)
+                firstword = false;
+            else
+                os << " ";
+            
+            os << Tranform(word, transMap);
+        }
+        os << endl;
+    } 
+}
+
+std::map<std::string, std::set<std::string>> buildMap(std::ifstream &map_file)
+{
+    map<string, set<string>> transMap;
+    string _key, _val;
+    while (map_file >> _key && getline(map_file, _val))
+    {
+        if(_val.size() > 1)
+            transMap[_key].insert(_val.substr(1));  // 跳过空格
+        else
+            throw runtime_error("invalid value with " + _key);
+    }
+    return transMap;
+}
+
+const std::string &Tranform(const std::string &word, std::map<std::string, std::set<std::string>> &transMap)
+{
+    randomNum_v3(0, 0, 5);
+    if(transMap.count(word))
+    {
+        // 说明找到了有替换规则
+        auto bgit = transMap[word].begin();
+        advance(bgit, randomNum_v3() % transMap[word].size());
+        return *bgit;
+    } else
+        return word;
 }

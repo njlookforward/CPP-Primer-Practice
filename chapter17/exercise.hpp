@@ -15,6 +15,10 @@
 #include <bitset>
 #include <regex>
 #include <random>
+#include <map>
+#include <set>
+#include <stdexcept>
+#include <iterator>
 #include "Sales_data.hpp"
 
 inline void checkArgs(int argc, int req)
@@ -131,7 +135,13 @@ std::vector<unsigned> good_randVec();
 
 // exercise_17_28_29_30
 unsigned int randomNum_v1();
+// 这些可变参数都设置为非法参数
 unsigned int randomNum_v2(long _seed = -1);
-unsigned int randomNum_v3(long _seed = -1, unsigned _min = 0, unsigned _max = 9999);
+unsigned int randomNum_v3(long _seed = -1, long _min = 1, long _max = 0);
+
+bool play(bool first);
+void word_tansform(std::ifstream &map_file, std::ifstream &text, std::ostream &os = std::cout);
+std::map<std::string, std::set<std::string>> buildMap(std::ifstream &map_file);
+const std::string &Tranform(const std::string &word, std::map<std::string, std::set<std::string>> &transMap);
 
 #endif

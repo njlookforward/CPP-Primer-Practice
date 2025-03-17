@@ -147,83 +147,145 @@ void exercise_17_21(int argc, char **argv)
 
 // exercise_17_24 is prog11
 
-void exercise_17_25(int argc, char **argv)
+// void exercise_17_25(int argc, char **argv)
+// {
+//     checkArgs(argc, 2);
+//     ifstream infile;
+//     openInputFile(infile, argv[1]);
+//     shared_ptr<ifstream> pfile(&infile, [](ifstream *pf) { pf->close(); });
+
+//     string phone("(\\()?(\\d{3})(\\))?([-. ])?(\\d{3})([-. ])?(\\d{4})");
+//     regex re(phone);
+
+//     string fmt("$2.$5.$7");
+//     smatch results;
+//     string line;
+//     while (getline(infile, line))
+//     {
+//         if(regex_search(line, results, re))
+//         {
+//             cout << results.prefix().str() << results.format(fmt) << endl;
+//         }    
+//     }
+// }
+
+// void exercise_17_26(int argc, char **argv)
+// {
+//     checkArgs(argc, 2);
+//     ifstream infile;
+//     openInputFile(infile, argv[1]);
+//     shared_ptr<ifstream> pfile(&infile, [](ifstream *pf) { pf->close(); });
+
+//     string phone("(\\()?(\\d{3})(\\))?([-. ])?(\\d{3})([-. ])?(\\d{4})");
+//     regex re(phone);
+
+//     string fmt("$2.$5.$7");
+//     string line;
+//     while (getline(infile, line))
+//     {
+//         sregex_iterator iter(line.begin(), line.end(), re), edit;
+//         string name;
+//         if (iter != edit)
+//         {
+//             name.assign(iter->prefix().str());
+//         }
+//         if(++iter != edit) {
+//             cout << name;
+//         }
+//         for(; iter != edit; ++iter)
+//         {
+//             cout << iter->format(fmt) << " ";
+//         }
+//         cout << endl;
+//     }
+// }
+
+// void exercise_17_27()
+// {
+//     string post("(\\d{5})([-])?(\\d{4})");
+//     regex re(post);
+
+//     string fmt("$1-$3");
+//     string stampnum;
+//     while (cin >> stampnum && stampnum != "q")
+//     {
+//         cout << regex_replace(stampnum, re, fmt) << endl;
+//     }
+// }
+
+void exercise_17_28_29()
 {
-    checkArgs(argc, 2);
-    ifstream infile;
-    openInputFile(infile, argv[1]);
-    shared_ptr<ifstream> pfile(&infile, [](ifstream *pf) { pf->close(); });
-
-    string phone("(\\()?(\\d{3})(\\))?([-. ])?(\\d{3})([-. ])?(\\d{4})");
-    regex re(phone);
-
-    string fmt("$2.$5.$7");
-    smatch results;
-    string line;
-    while (getline(infile, line))
-    {
-        if(regex_search(line, results, re))
-        {
-            cout << results.prefix().str() << results.format(fmt) << endl;
-        }    
-    }
-}
-
-void exercise_17_26(int argc, char **argv)
-{
-    checkArgs(argc, 2);
-    ifstream infile;
-    openInputFile(infile, argv[1]);
-    shared_ptr<ifstream> pfile(&infile, [](ifstream *pf) { pf->close(); });
-
-    string phone("(\\()?(\\d{3})(\\))?([-. ])?(\\d{3})([-. ])?(\\d{4})");
-    regex re(phone);
-
-    string fmt("$2.$5.$7");
-    string line;
-    while (getline(infile, line))
-    {
-        sregex_iterator iter(line.begin(), line.end(), re), edit;
-        string name;
-        if (iter != edit)
-        {
-            name.assign(iter->prefix().str());
-        }
-        if(++iter != edit) {
-            cout << name;
-        }
-        for(; iter != edit; ++iter)
-        {
-            cout << iter->format(fmt) << " ";
-        }
-        cout << endl;
-    }
-}
-
-void exercise_17_27()
-{
-    string post("(\\d{5})([-])?(\\d{4})");
-    regex re(post);
-
-    string fmt("$1-$3");
-    string stampnum;
-    while (cin >> stampnum && stampnum != "q")
-    {
-        cout << regex_replace(stampnum, re, fmt) << endl;
-    }
-}
-
-void exercise_17_28_29_30()
-{
-    // BUG
-    // 总是出现问题，是我的测试方法有问题，必须修改一次然后继续才行，否则一直都是0000000000
-    for (size_t i = 0; i < 10; i++)
-    {
+    // BUg: 总是出现问题，是我的测试方法有问题，必须修改一次然后继续才行，否则一直都是0000000000
+    // 对于随机数发生器，设置一次种子之后，要进行连续地生成才可以，不能设置一次生成一次，这样都是00000
+    for(int i = 0; i < 10; ++i)
         // cout << randomNum_v1() << " ";
-        // cout << randomNum_v2(i * 2) << " ";
-        cout << randomNum_v3(i * 100, 0, 2 * i) << " ";
+        cout << randomNum_v2() << " ";
+    cout << endl;
+
+    // Bug: 现在终于发现为什么一直打印一串000000000000000000了
+    // 因为我在循环中不断地更改随机数引擎对象的种子，每次循环都在更新，都在原地踏步，因此是一串相同的0
+    // 必须在循环外面进行更新，在里面生成新的随机数
+    cout << randomNum_v2(0) << " ";
+    for(int i = 0; i < 9; ++i)
+        // cout << randomNum_v1() << " ";
+        cout << randomNum_v2() << " ";
+    cout << endl;
+
+    cout << randomNum_v2(19743) << " ";
+    for(int i = 0; i < 9; ++i)
+        // cout << randomNum_v1() << " ";
+        cout << randomNum_v2() << " ";
+    cout << endl;
+}
+
+void exercise_17_30()
+{
+    for(int i = 0; i < 10; ++i)
+        cout << randomNum_v3() << " ";
+    cout << endl;
+
+    cout << randomNum_v3(0) << " ";
+    for (size_t i = 0; i < 9; i++)
+    {
+        cout << randomNum_v3() << " ";
     }
     cout << endl;
+
+    cout << randomNum_v3(19743, 0, 9) << " ";
+    for (size_t i = 0; i < 9; i++)
+    {
+        cout << randomNum_v3() << " ";
+    }
+    cout << endl;
+}
+
+// exercise_17_31
+// 对于本节中的游戏，如果将engine and distribution定义在do_while循环内，那么每次循环随机数发生器都被重新生成
+// 因此每次循环产生的随机数都是一样的，不会发生任何变化，因此游戏结果都是一样的，没有任何变化。如果非要定义在循环内
+// 那么可以将engine and dsitribution定义为static
+
+// exercise_17_32
+// 如果将resp定义在循环内，那么在while的条件表达式中，resp已经出了它的作用域，resp是非法的无定义的
+// 因此无法向resp输入数据，会编译错误
+
+void exercise_17_33(int argc, char **argv)
+{
+    checkArgs(argc, 4);
+    ifstream map_file, infile;
+    openInputFile(map_file, argv[1]);
+    openInputFile(infile, argv[2]);
+    ofstream outfile(argv[3], ios::ate);
+    if(!outfile)
+    {
+        cerr << "sorry, cannot open " << argv[3] << endl;
+        exit(-1);
+    }
+    shared_ptr<ifstream> pf1(&map_file, [](ifstream *pf) { pf->close(); });
+    shared_ptr<ifstream> pf2(&infile, [](ifstream *pf) { pf->close(); });
+    shared_ptr<ofstream> pf3(&outfile, [](ofstream *pf) { pf->close(); });
+
+    word_tansform(map_file, infile, outfile);
+    // word_tansform(map_file, infile);
 }
 
 int main(int argc, char **argv)
@@ -238,7 +300,9 @@ int main(int argc, char **argv)
     // exercise_17_25(argc, argv);
     // exercise_17_26(argc, argv);
     // exercise_17_27();
-    exercise_17_28_29_30();
+    // exercise_17_28_29();
+    // exercise_17_30();
+    exercise_17_33(argc, argv);
 
     return 0;
 }
