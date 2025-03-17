@@ -334,6 +334,52 @@ void exercise_17_37(int argc, char **argv)
     // 空行可以正常读取，但是文件中输入行长度大于数组长度时，会读取失败，直接跳出循环
 }
 
+void exercise_17_37_answer(int argc, char **argv)
+{
+    checkArgs(argc, 2);
+    ifstream infile;
+    openInputFile(infile, argv[1]);
+    shared_ptr<ifstream> pf(&infile, [](ifstream *p){ p->close(); });
+
+    char text[30];
+    // 又学到了一种读取文件的方法，只观察文件末尾标识符
+    while (!infile.eof())   // 需要一直读到文件末尾
+    {
+        infile.getline(text, 30);
+        cout << text << endl;
+        if(infile.fail())   // 说明输入行的字符长度大于30
+        {
+            if(infile.gcount() == 29)
+                infile.clear();
+            else
+                break;        
+        }
+    }
+}
+
+void exercise_17_38_answer(int argc, char **argv)
+{
+    checkArgs(argc, 2);
+    ifstream infile;
+    openInputFile(infile, argv[1]);
+    shared_ptr<ifstream> pf(&infile, [](ifstream *p){ p->close(); });
+
+    char text[30];
+    while (!infile.eof())   // 需要一直读到文件末尾
+    {
+        infile.getline(text, 30);
+        cout << text;
+        if(infile.fail())   // 说明输入行的字符长度大于30
+        {
+            if(infile.gcount() == 29)
+                infile.clear();
+            else
+                break;        
+        } else
+            cout << endl;
+    }
+}
+
 void exercise_17_38(int argc, char **argv)
 {
     // 不会，需要看答案
@@ -355,7 +401,7 @@ void exercise_17_38(int argc, char **argv)
     }
 }
 
-// exercise_17_38 is prog20
+// exercise_17_39 is prog20
 
 int main(int argc, char **argv)
 {
@@ -375,7 +421,9 @@ int main(int argc, char **argv)
     // exercise_17_35();
     // exercise_17_36();
     // exercise_17_37(argc, argv);
-    exercise_17_38(argc, argv);
+    // exercise_17_37_answer(argc, argv);
+    // exercise_17_38(argc, argv);
+    exercise_17_38_answer(argc, argv);
 
     return 0;
 }
