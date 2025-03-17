@@ -274,7 +274,8 @@ void exercise_17_33(int argc, char **argv)
     ifstream map_file, infile;
     openInputFile(map_file, argv[1]);
     openInputFile(infile, argv[2]);
-    ofstream outfile(argv[3], ios::ate);
+    // 以追加模式定位到文件的末尾，应该是app，我记错了
+    ofstream outfile(argv[3], ios::app | ios::out);
     if(!outfile)
     {
         cerr << "sorry, cannot open " << argv[3] << endl;
