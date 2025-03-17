@@ -5,6 +5,8 @@
 #include <memory>
 #include <bitset>
 #include <random>
+#include <iomanip>
+#include <cmath>
 #include "exercise.hpp"
 #include "TextQuery_tuple.hpp"
 
@@ -289,6 +291,72 @@ void exercise_17_33(int argc, char **argv)
     // word_tansform(map_file, infile);
 }
 
+// exercise_17_34 is prog17 and prog18
+void exercise_17_35()
+{
+    cout << uppercase << "hexadecimal: "
+         << hexfloat << sqrt(2.0)
+         << nouppercase << defaultfloat << endl;
+}
+
+void exercise_17_36()
+{
+    // 按列进行打印
+    cout << setw(12) << 100 * sqrt(2.0) << "defaultfloat\n"
+         << scientific
+         << setw(12) << 100 * sqrt(2.0) << "scientific\n"
+         << fixed
+         << setw(12) << 100 * sqrt(2.0) << "fixed float\n"
+         << hexfloat
+         << setw(12) << 100 * sqrt(2.0) << "hexadecimal\n"
+         << defaultfloat
+         << setw(12) << 100 * sqrt(2.0) << "default float\n";
+}
+
+void exercise_17_37(int argc, char **argv)
+{
+    checkArgs(argc, 2);
+    ifstream infile;
+    // ifstream infile("..\\..\\..\\data\\storyDataFile");
+    openInputFile(infile, argv[1]);
+    shared_ptr<ifstream> pf(&infile, [](ifstream *p){ p->close(); });
+
+    string line(50, '\0');
+    // Bug：经过试验，如果数组长度小于文件输入行的长度，那么读取失败，直接跳出循环
+    while (infile.getline(&line[0], 50, '\n'))
+    { 
+        cout << &line[0] << endl;
+        // 目前通过实验，如果使用string进行输出，那么未被覆盖的部分会被输出
+        // 而通过使用char*风格字符串进行输出，就是正常的格式了，说明，getline会在行的末尾添加'\0'
+        // 同时说明string是把有效字符全部逐个输出出去
+        // line.assign(50, '\0');
+    }
+    // 空行可以正常读取，但是文件中输入行长度大于数组长度时，会读取失败，直接跳出循环
+}
+
+void exercise_17_38(int argc, char **argv)
+{
+    // 不会，需要看答案
+    checkArgs(argc, 2);
+    fstream file(argv[1], ios::in | ios::out);
+    if(!file)
+    {
+        cerr << "sorry, cannot open " << argv[1] << endl;
+        exit(-1);
+    }
+    shared_ptr<fstream> pf(&file, [](fstream *p){ p->close(); });
+
+    string line(30, '\0');
+    while (file.getline(&line[0], 30, '\n'))
+    { 
+        file.seekg(-1, ios::cur);
+        file << &line[0];
+        file.seekg(1, ios::cur);
+    }
+}
+
+// exercise_17_38 is prog20
+
 int main(int argc, char **argv)
 {
     // exercise_17_1();
@@ -303,7 +371,11 @@ int main(int argc, char **argv)
     // exercise_17_27();
     // exercise_17_28_29();
     // exercise_17_30();
-    exercise_17_33(argc, argv);
+    // exercise_17_33(argc, argv);
+    // exercise_17_35();
+    // exercise_17_36();
+    // exercise_17_37(argc, argv);
+    exercise_17_38(argc, argv);
 
     return 0;
 }

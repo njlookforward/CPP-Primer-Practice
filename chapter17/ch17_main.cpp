@@ -10,6 +10,8 @@
 #include <random>
 #include <ctime>
 #include <cmath>
+#include <iomanip>
+#include <cstdio>
 #include "exercise.hpp"
 
 using namespace std;
@@ -412,6 +414,140 @@ void prog16_play()
     } while(cin >> resp && resp[0] == 'y');
 }
 
+void prog17_io()
+{
+    cout << "default bool values: " << true << " " << false << endl
+         << "alphabool values: " << boolalpha << true << " " << false << endl;
+    
+    cout << showbase    // 显示进制
+         << "default: " << 20 << " " << 1024 << endl
+         << "octal: " << oct << 20 << " " << 1024 << endl
+         << "hex: " << hex << 20 << " " << 1024 << endl
+         << "decimal: " << dec << 20 << " " << 1024 << endl
+         << noshowbase;
+    
+    cout << uppercase << showbase << hex
+         << "printed in hexademcimal: " << 20 << " " << 1234
+         << nouppercase << noshowbase << dec << endl;
+        
+    // 针对浮点数，设置精度（显示数字的个数），设置表示方法，设置要不要显示小数点
+    cout << "Precision: " << cout.precision()
+         << ", Value: " << sqrt(2) << endl;
+    cout.precision(12);
+    cout << "Precision: " << cout.precision()
+         << ", Value: " << sqrt(2) << endl;
+    cout.precision(3);
+    cout << "Precision: " << cout.precision()
+         << ", Value: " << sqrt(2) << endl
+         << setprecision(8);
+    
+    cout << "double expression:" << endl;
+    cout << "default format: " << 100 * sqrt(2.0) << "\n"
+         << "scientific: " << scientific << 100 * sqrt(2.0) << "\n"
+         << "fixed decimal: " << fixed << 100 * sqrt(2.0) << "\n"
+         << "hexadecimal: " << hexfloat << 100 * sqrt(2.0) << "\n"
+         << "decimal float: " << defaultfloat << 100 * sqrt(2.0) << "\n";
+    
+    cout << "default value: " << 10.0 << endl
+         << showpoint << "explicit point: " << 10.0 << noshowpoint << endl;
+    cout << setprecision(6);
+
+    int i = -16;
+    double d = 3.14159;
+    cout << "i: " << setw(12) << i << "next col\n"
+         << "d: " << setw(12) << d << "next col\n"; // setw与endl一样，只控制setw()后面的一次输出
+    cout << left 
+         << "i: " << setw(12) << i << "next col\n"
+         << "d: " << setw(12) << d << "next col\n";
+    cout << right
+         << "i: " << setw(12) << i << "next col\n"
+         << "d: " << setw(12) << d << "next col\n";
+    cout << internal
+         << "d: " << setw(12) << i << "next col\n"
+         << "i: " << setw(12) << d << "next col\n";
+    cout << setfill('#')
+         << "i: " << setw(12) << i << "next col\n"
+         << "d: " << setw(12) << d << "next col\n"
+         << setfill(' ') << right;
+}
+
+void prog18_skipws(int argc, char **argv)
+{
+    checkArgs(argc, 2);
+    ifstream infile;
+    openInputFile(infile, argv[1]);
+    shared_ptr<ifstream> pf(&infile, [](ifstream *p) { p->close(); });
+
+    char ch;
+    while (infile >> ch)
+    {
+        cout << ch;
+    }
+    cout << endl;
+    infile.clear();
+    infile.seekg(0, ios::beg);
+    infile >> noskipws;
+    while (infile >> ch)
+    {
+        cout << ch;
+    }
+    infile >> skipws;
+}
+
+void prog19_get(int argc, char **argv)
+{
+    // 单字节操作的未格式化IO操作
+    checkArgs(argc, 2);
+    ifstream infile;
+    openInputFile(infile, argv[1]);
+    shared_ptr<ifstream> pf(&infile, [](ifstream *p) { p->close(); });
+
+    // 包括空白字符都会读进来
+    char ch;
+    while (infile.get(ch))
+    {
+        cout.put(ch);
+    }
+    cout << endl;
+    infile.clear();
+    infile.seekg(0, ios::beg);
+    int ch2;
+    while ((ch2 = infile.get()) != EOF)
+    {
+        cout.put(ch2);
+    }
+    
+}
+
+void prog20_tell_seek(int argc, char **argv)
+{
+    checkArgs(argc, 2);
+    fstream file(argv[1], ios::ate | ios::in | ios::out);
+    if(!file)
+    {
+        cerr << "Sorry, cannot open " << argv[1] << endl;
+        exit(-1);
+    }
+
+    fstream::pos_type origin_end = file.tellg();
+    file.seekg(0, ios::beg);
+    auto curpos = file.tellg();
+    string line;
+    fstream::pos_type cnt = 0;
+    while (curpos != origin_end && getline(file, line))
+    {
+        // getline的原理应该是向string中赋值，因此不需要担心是否会被覆盖，是全新的数据
+        cnt += line.size() + 1;
+        curpos = file.tellg();
+        file.seekg(0, ios::end);
+        file << line;
+        if(curpos != origin_end) file << " ";
+        file.seekg(curpos);
+    }
+    file.seekg(0, ios::end);
+    file << "\n";
+}
+
 int main(int argc, char **argv)
 {
     // prog1_tuple();
@@ -429,7 +565,11 @@ int main(int argc, char **argv)
     // prog13_random_seed();
     // prog14_random_real();
     // prog15_normal_random();
-    prog16_play();
+    // prog16_play();
+    // prog17_io();
+    // prog18_skipws(argc, argv);
+    // prog19_get(argc, argv);
+    prog20_tell_seek(argc, argv);
 
     return 0;
 }

@@ -19,6 +19,7 @@
 #include <set>
 #include <stdexcept>
 #include <iterator>
+#include <ctime>
 #include "Sales_data.hpp"
 
 inline void checkArgs(int argc, int req)

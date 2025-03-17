@@ -270,7 +270,8 @@ std::map<std::string, std::set<std::string>> buildMap(std::ifstream &map_file)
 
 const std::string &Tranform(const std::string &word, std::map<std::string, std::set<std::string>> &transMap)
 {
-    randomNum_v3(0, 0, 5);
+    // 如何每次都不一样，应该使用time修改随机数发生器的种子
+    randomNum_v3(static_cast<long>(time(NULL)), 0, 9);
     if(transMap.count(word))
     {
         // 说明找到了有替换规则
