@@ -63,17 +63,31 @@ void reportResults(std::istream &is, std::ostream &os, std::vector<std::vector<S
     }
 }
 
-std::pair<storeNo, bookPos> findBook_v2(std::vector<std::vector<Sales_data>> &bookStores, const std::string &book)
+vector<std::pair<storeNo, found>> findBook_v2(std::vector<std::vector<Sales_data>> &bookStores, const std::string &book)
 {
-    // 如果没有找到，就返回bookstores.size()和bgit_store.end()
-    for(auto bgit_store = bookStores.begin(); bgit_store != bookStores.end(); ++bgit_store)
+    // 自己想错了，答案说明需要用pair<size_type, pait<It, It>>来代替tuple<size_type, It, It>;
+    // // 如果没有找到，就返回bookstores.size()和bgit_store.end()
+    // for(auto bgit_store = bookStores.begin(); bgit_store != bookStores.end(); ++bgit_store)
+    // {
+    //     auto bookit = find_if(bgit_store->begin(), bgit_store->end(),
+    //             [book](const Sales_data &item){ return item.isbn() == book; }); // Bug: find_if需要一元谓词
+    //     if(bookit != bgit_store->cend())
+    //         return make_pair(bgit_store - bookStores.cbegin(), bookit);
+    // }
+    // return make_pair(bookStores.size(), bookStores.begin()->end());
+    vector<pair<storeNo, found>> matches;
+    for(auto bgit_store = bookStores.begin(), edit_store = bookStores.end();
+        bgit_store != edit_store; ++bgit_store)
     {
-        auto bookit = find_if(bgit_store->begin(), bgit_store->end(),
-                [book](const Sales_data &item){ return item.isbn() == book; }); // Bug: find_if需要一元谓词
-        if(bookit != bgit_store->cend())
-            return make_pair(bgit_store - bookStores.cbegin(), bookit);
+        sort(bgit_store->begin(), bgit_store->end(),
+            static_cast<bool(*)(const Sales_data &, const Sales_data&)>(compareIsbn));
+        auto found = equal_range(bgit_store->begin(), bgit_store->end(), Sales_data(book),
+            static_cast<bool(*)(const Sales_data &, const Sales_data&)>(compareIsbn));
+        
+        if(found.first != found.second)
+            matches.push_back({bgit_store - bookStores.begin(), found});
     }
-    return make_pair(bookStores.size(), bookStores.begin()->end());
+    return matches;
 }
 
 pmatchset findBook_v3(std::vector<std::vector<Sales_data>> &bookstores, const std::string &book)
@@ -271,12 +285,17 @@ std::map<std::string, std::set<std::string>> buildMap(std::ifstream &map_file)
 const std::string &Tranform(const std::string &word, std::map<std::string, std::set<std::string>> &transMap)
 {
     // 如何每次都不一样，应该使用time修改随机数发生器的种子
-    randomNum_v3(static_cast<long>(time(NULL)), 0, 9);
+    // randomNum_v3(static_cast<long>(time(NULL)), 0, 9);
+    // 是随机数引擎对象保存状态这样随机数才能指向序列中的下一个数，包括重新设置种子都是为了调整在随机数序列中的顺序
+    // 随机数分布对象作用是确定分布类型，数据范围，数据类型
+    // 引擎用来生成随机数，分布用来筛选随机数
+    static default_random_engine e(static_cast<unsigned>(time(NULL)));
     if(transMap.count(word))
     {
         // 说明找到了有替换规则
+        uniform_int_distribution<unsigned> u(0, transMap[word].size() - 1);
         auto bgit = transMap[word].begin();
-        advance(bgit, randomNum_v3() % transMap[word].size());
+        advance(bgit, u(e));
         return *bgit;
     } else
         return word;

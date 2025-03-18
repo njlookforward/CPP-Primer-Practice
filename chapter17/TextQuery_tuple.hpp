@@ -10,6 +10,7 @@
 #include <map>
 #include <set>
 #include <tuple>
+#include <cctype>
 
 class TextQuery {
 public:

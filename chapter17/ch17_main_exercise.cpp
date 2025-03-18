@@ -9,7 +9,7 @@
 #include <cmath>
 #include "exercise.hpp"
 #include "TextQuery_tuple.hpp"
-
+    
 using namespace std;
 
 void exercise_17_1()
@@ -45,6 +45,8 @@ void exercise_17_3(int argc, char **argv)
 // 我认为tuple的设计会更好，代码更精简，逻辑也是相同的，即使要将文本查询程序扩展成面向对象设计版本
 // 针对tuple类型的结果，也可以直接得到string，set的begin and end, text->size()等等
 // 思考的过程永远都不要复杂化，针对谁进行思考，就从谁为原点进行思考，不要舍近求远
+// answer: 若查询结果只是临时使用，比如输出后立刻丢弃，那么定义tuple更为简单；如果查询结果还需要进行其他操作
+// 那么定义QueryResult类是更好地方式。
 }
 
 // exercise_17_4 in the exercise.hpp and prog2
@@ -52,6 +54,7 @@ void exercise_17_3(int argc, char **argv)
 // exercies_17_7
 // 我还是更倾向于使用tuple版本，原因就是简单，足够满足我的需求，尽管我可以自定义struct类实现同样的功能
 // 但是还需要定义数据成员和至少要有构造函数，因此相比于tuple，更麻烦一些
+// 如果只是简单地使用搜索结果，使用tuple就足够了；但如果需要使用结果做进一步的处理，那么使用自定义类会更好
 
 // exercise_17_8
 // 如果将Sales_data()作为accumulate的第三个参数的话，也会进行正常的累加，但是在输出时，是没有isbn的书号的
@@ -79,8 +82,8 @@ void exercise_17_10()
                     (1UL << 5) | (1UL << 8) | (1UL << 13) | (1UL << 21);
     cout << bv << endl;
     bitset<22> bv2;
-    bv2.set(13);
-    bv2[19] = 1;
+    bv2.set(1), bv2.set(2), bv2.set(3), bv2.set(5),
+    bv2.set(8), bv2.set(13), bv2.set(21);
     cout << bv2 << endl;
 }
 
@@ -141,7 +144,7 @@ void exercise_17_21(int argc, char **argv)
 }
 
 // exercise_17_22
-// string phone("(\\()?(\\d{3})(\\))?([ ]*)(\\d{3})([ ]*)(\\d{4})");
+// string phone("(\\()?(\\d{3})(\\))?([-.]|(\\s)*)?(\\d{3})([-.]|(\\s)*)?(\\d{4})");
 // 我认为就是修改正则表达式
 
 // exercise_17_23
@@ -369,6 +372,7 @@ void exercise_17_38_answer(int argc, char **argv)
     {
         infile.getline(text, 30);
         cout << text;
+        // 这样可以将分多次读入的一行文本打印成一行
         if(infile.fail())   // 说明输入行的字符长度大于30
         {
             if(infile.gcount() == 29)
@@ -401,7 +405,7 @@ void exercise_17_38(int argc, char **argv)
     }
 }
 
-// exercise_17_39 is prog20
+// exercise_17_39 is prog20在windows中会出现seek定位不准的情况
 
 int main(int argc, char **argv)
 {
@@ -417,13 +421,13 @@ int main(int argc, char **argv)
     // exercise_17_27();
     // exercise_17_28_29();
     // exercise_17_30();
-    // exercise_17_33(argc, argv);
+    exercise_17_33(argc, argv);
     // exercise_17_35();
     // exercise_17_36();
     // exercise_17_37(argc, argv);
     // exercise_17_37_answer(argc, argv);
     // exercise_17_38(argc, argv);
-    exercise_17_38_answer(argc, argv);
+    // exercise_17_38_answer(argc, argv);
 
     return 0;
 }

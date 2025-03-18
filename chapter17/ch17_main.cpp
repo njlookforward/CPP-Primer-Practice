@@ -569,7 +569,7 @@ int main(int argc, char **argv)
     // prog17_io();
     // prog18_skipws(argc, argv);
     // prog19_get(argc, argv);
-    prog20_tell_seek(argc, argv);
+    // prog20_tell_seek(argc, argv);
 
     return 0;
 }

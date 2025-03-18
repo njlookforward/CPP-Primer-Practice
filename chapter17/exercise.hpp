@@ -60,7 +60,8 @@ void reportResults(std::istream &is, std::ostream &os,
 // exercise_17_5
 typedef std::vector<std::vector<Sales_data>>::size_type storeNo;
 typedef std::vector<Sales_data>::iterator bookPos;
-std::pair<storeNo, bookPos> findBook_v2(std::vector<std::vector<Sales_data>> &bookStores, 
+typedef std::pair<bookPos, bookPos> found;
+std::vector<std::pair<storeNo, found>> findBook_v2(std::vector<std::vector<Sales_data>> &bookStores, 
                                                             const std::string &book);
 
 // exercise_17_6

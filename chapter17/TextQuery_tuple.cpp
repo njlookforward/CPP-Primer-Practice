@@ -1,5 +1,4 @@
 #include "TextQuery_tuple.hpp"
-#include <cctype>
 using namespace std;
 
 TextQuery::TextQuery(ifstream &inputfile) : _ptext(new vector<string>())
